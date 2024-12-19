@@ -20,6 +20,12 @@ git clone git@github.com:fnskaalab/weather_app.git
 cd weather_app
 ```
 
+Installer les dépendances
+
+```bash
+composer install
+```
+
 Copiez le fichier .env.example vers .env :
 
 ```bash
