@@ -15,10 +15,11 @@ Assurez-vous d'avoir installé les outils suivants avant de commencer :
 
 Clonez le repository dans votre environnement local :
 
-   ```bash
-   git clone <URL_DU_REPOSITORY>
-   cd <Dossier_DU_Projet>
-   ```
+```bash
+git clone git@github.com:fnskaalab/weather_app.git
+cd weather_app
+```
+
 Copiez le fichier .env.example vers .env :
 
 ```bash
