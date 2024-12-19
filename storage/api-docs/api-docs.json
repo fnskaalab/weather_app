@@ -1,0 +1,213 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My API",
+        "description": "API for suggesting product from weather forecast",
+        "contact": {
+            "name": "Fawzi Noual",
+            "email": "fawzi.noual@skaalab.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Retrieve a paginated list of products",
+                "description": "Returns a paginated collection of products",
+                "operationId": "getProducts",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/products/weather": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Suggest products based on weather conditions",
+                "description": "Suggest products filtered by weather compatibility based on the weather forecast for a given location and date.",
+                "operationId": "suggestProductByWeather",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductSuggestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "products": {
+                                                    "description": "List of products matching the weather conditions",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/ProductResource"
+                                                    }
+                                                },
+                                                "weather": {
+                                                    "description": "Weather forecast details",
+                                                    "properties": {
+                                                        "city": {
+                                                            "type": "string",
+                                                            "example": "Paris"
+                                                        },
+                                                        "is": {
+                                                            "description": "Temperature in Celsius",
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 15.2
+                                                        },
+                                                        "date": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-02-20"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error fetching weather data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to fetch weather data: Invalid API key."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ProductSuggestionRequest": {
+                "title": "Product Suggestion Request",
+                "description": "Request payload for suggesting products based on weather and date",
+                "required": [
+                    "weather",
+                    "date"
+                ],
+                "properties": {
+                    "weather": {
+                        "description": "Weather information",
+                        "properties": {
+                            "city": {
+                                "description": "City name",
+                                "type": "string",
+                                "example": "Paris"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "date": {
+                        "description": "Date for which suggestions are requested. Must be today or a future date.",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-02-20"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductResource": {
+                "title": "Product Resource",
+                "description": "Representation of a Product",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "T-Shirt"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 19.99
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Products",
+            "description": "Products"
+        }
+    ]
+}
